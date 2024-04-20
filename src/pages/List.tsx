@@ -4,27 +4,28 @@ import axios from "axios";
 
 import { COLUMNS_LIST } from "../constants/table-list";
 import { clearWord, formatDate } from "../helpers/date";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 
 const ListPage = () => {
   const navigate = useNavigate();
+
   const [products, setProducts] = useState<any[]>([]);
   const [constProducts, setConstProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [showNumberProducts, setShowNumberProducts] = useState("10");
+  // ========================================
+
   const getProducts = async () => {
     try {
       const pathBase = process.env.REACT_APP_API_URL;
-      const config = {
-        headers: {
-          authorId: 428,
-        },
-      };
+      const config = { headers: { authorId: 428 } };
       const response = await axios.get(`${pathBase!}/bp/products`, config);
       if (response.status === 200) {
         setLoading(false);
-        setConstProducts(response.data);
-        setProducts(response.data);
+        const products = response.data;
+        setConstProducts(products);
+        productsPerPage(products, showNumberProducts);
       }
     } catch (error) {
       console.log(error);
@@ -34,7 +35,7 @@ const ListPage = () => {
   const searchProduct = debounce((e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (!value || value === "") {
-      setProducts(constProducts);
+      productsPerPage(constProducts, showNumberProducts);
       return;
     }
 
@@ -44,8 +45,19 @@ const ListPage = () => {
       return nameProduct.includes(wordSearch);
     });
 
-    setProducts(filterProducts);
-  }, 500);
+    productsPerPage(filterProducts, showNumberProducts);
+  }, 400);
+
+  const productsPerPage = (products: any[], value: string) => {
+    const productsPerPage = products.slice(0, Number(value));
+    setProducts(productsPerPage);
+  };
+
+  const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setShowNumberProducts(value);
+    productsPerPage(constProducts, value);
+  };
 
   const goToAddProduct = () => {
     navigate("/registro");
@@ -58,7 +70,7 @@ const ListPage = () => {
   return (
     <section>
       <div className="flex justify-between py-5">
-        <input type="text" placeholder="Search" onChange={searchProduct} />
+        <input type="text" placeholder="Search..." onChange={searchProduct} />
         <button onClick={goToAddProduct}>Agregar</button>
       </div>
       {loading ? (
@@ -113,7 +125,7 @@ const ListPage = () => {
           </table>
           <div className="flex justify-between mt-4">
             <p>{products.length} resultados</p>
-            <select name="" id="">
+            <select value={showNumberProducts} onChange={handleSelect}>
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="15">15</option>
