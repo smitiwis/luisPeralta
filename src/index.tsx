@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import "./styles/lib/normalize.scss";
+import "./styles/lib/tailwind.scss";
 import './styles/index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
