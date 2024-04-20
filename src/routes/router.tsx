@@ -7,18 +7,21 @@ import {
 import ListPage from "../pages/List";
 import RegisterPage from "../pages/Register";
 import Header from "../components/Header";
+import LayoutMain from "../components/layouts/LayoutMain";
 
 const AppRoutes = () => {
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <Header />
       <main>
-        <Routes>
-          <Route path="/" element={<ListPage />} />
-          <Route path="/registro" element={<RegisterPage />} />
+        <LayoutMain>
+          <Routes>
+            <Route path="/" element={<ListPage />} />
+            <Route path="/registro" element={<RegisterPage />} />
 
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </LayoutMain>
       </main>
       {/* <footer></footer> */}
     </Router>
