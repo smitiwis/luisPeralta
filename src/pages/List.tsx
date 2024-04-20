@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { COLUMNS_LIST } from "../constants/table-list";
-import axios from "axios";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../helpers/date";
+import axios from "axios";
+
+import { COLUMNS_LIST } from "../constants/table-list";
+import { clearWord, formatDate } from "../helpers/date";
+import { debounce } from 'lodash';
 
 const ListPage = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState<any[]>([]);
+  const [constProducts, setConstProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const getProducts = async () => {
@@ -20,12 +23,29 @@ const ListPage = () => {
       const response = await axios.get(`${pathBase!}/bp/products`, config);
       if (response.status === 200) {
         setLoading(false);
+        setConstProducts(response.data);
         setProducts(response.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const searchProduct = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (!value || value === "") {
+      setProducts(constProducts);
+      return;
+    }
+
+    const wordSearch = clearWord(value.toLowerCase());
+    const filterProducts = constProducts.filter(({ name }) => {
+      const nameProduct = clearWord(name.toLowerCase());
+      return nameProduct.includes(wordSearch);
+    });
+
+    setProducts(filterProducts);
+  }, 500);
 
   const goToAddProduct = () => {
     navigate("/registro");
@@ -38,7 +58,7 @@ const ListPage = () => {
   return (
     <section>
       <div className="flex justify-between py-5">
-        <input type="text" placeholder="Search" />
+        <input type="text" placeholder="Search" onChange={searchProduct} />
         <button onClick={goToAddProduct}>Agregar</button>
       </div>
       {loading ? (

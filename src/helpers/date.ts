@@ -1,10 +1,8 @@
 export const formatDate = (dateString: string): string => {
-  // Crear un objeto Date a partir de la cadena de fecha
   const date = new Date(dateString);
 
-  // Obtener los componentes de la fecha
   const day = date.getDate();
-  const month = date.getMonth() + 1; // Los meses comienzan desde 0
+  const month = date.getMonth() + 1; 
   const year = date.getFullYear();
 
   // Formatear la fecha en el formato deseado (DD-MM-YYYY)
@@ -13,4 +11,10 @@ export const formatDate = (dateString: string): string => {
   }-${year}`;
 
   return formattedDate;
+};
+
+export const clearWord = (palabra: string):string => {
+  // Reemplazar letras acentuadas con sus equivalentes sin acento
+  const limpio = palabra.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return limpio;
 };
