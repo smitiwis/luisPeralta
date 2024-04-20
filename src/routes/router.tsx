@@ -6,11 +6,12 @@ import {
 } from "react-router-dom";
 import ListPage from "../pages/List";
 import RegisterPage from "../pages/Register";
+import Header from "../components/Header";
 
 const AppRoutes = () => {
   return (
     <Router basename={process.env.PUBLIC_URL}>
-      {/* <Header /> */}
+      <Header />
       <main>
         <Routes>
           <Route path="/" element={<ListPage />} />

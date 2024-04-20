@@ -1,0 +1,29 @@
+// BREAKPOINTS
+$point_xs: 576px;
+$point_sm: 768px;
+$point_md: 992px;
+$point_lg: 1200px;
+$point_xl: 1400px;
+
+
+.container-main {
+  padding: 0;
+
+  @media (min-width: $point_xs) {
+    max-width: 540px;
+    padding: 0;
+    margin: auto;
+  }
+
+  @media (min-width: $point_sm) {
+    max-width: 900px;
+  }
+
+  @media (min-width: $point_md) {
+    max-width: 950px;
+  }
+
+  @media (min-width: $point_lg) {
+    max-width: 1230px;
+  }
+}

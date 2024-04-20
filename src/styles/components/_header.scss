@@ -1,0 +1,11 @@
+.header-main{
+  position: relative;
+  z-index: 15;
+  padding: 1.5rem;
+  box-shadow: 0px 2px 12px 1px rgba(0, 0, 0, 0.2);
+
+  &__title{
+    text-align: center;
+    font-weight: $fw-bold;
+  }
+}
