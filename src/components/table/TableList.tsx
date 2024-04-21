@@ -71,7 +71,20 @@ const TableList: FC<TableListProps> = ({
     }
   };
 
+  const searchProduct = debounce((value: string) => {
+    if (!value || value === "") {
+      productsPerPage(constProducts, showNumberProducts);
+      return;
+    }
 
+    const wordSearch = clearWord(value.toLowerCase());
+    const filterProducts = constProducts.filter(({ name }) => {
+      const nameProduct = clearWord(name.toLowerCase());
+      return nameProduct.includes(wordSearch);
+    });
+
+    productsPerPage(filterProducts, showNumberProducts);
+  }, 500);
 
   useEffect(() => {
     setConstProducts(data);
@@ -79,22 +92,6 @@ const TableList: FC<TableListProps> = ({
   }, [data, showNumberProducts]);
 
   useEffect(() => {
-
-    const searchProduct = debounce((value: string) => {
-      if (!value || value === "") {
-        productsPerPage(constProducts, showNumberProducts);
-        return;
-      }
-  
-      const wordSearch = clearWord(value.toLowerCase());
-      const filterProducts = constProducts.filter(({ name }) => {
-        const nameProduct = clearWord(name.toLowerCase());
-        return nameProduct.includes(wordSearch);
-      });
-  
-      productsPerPage(filterProducts, showNumberProducts);
-    }, 500);
-
     searchProduct(filterByName);
   }, [filterByName]);
 
