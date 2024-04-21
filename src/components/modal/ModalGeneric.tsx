@@ -30,7 +30,7 @@ const ModalGeneric: FC<Props> = ({
         onRequestClose={closeOnOutside ? onCloseModal : undefined} // Cerrar con click fuera del modal
         onAfterClose={onAfterClose}
       >
-        <h3>{message}</h3>
+        <h3 className="text-base mb-5 text-center font-[500]">{message}</h3>
         {children}
       </Modal>
     </div>

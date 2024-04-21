@@ -15,7 +15,7 @@ const ListPage = () => {
   const [constProducts, setConstProducts] = useState<Product_I[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<Product_I>();
 
   const [showNumberProducts, setShowNumberProducts] = useState("10");
   // ========================================
@@ -69,19 +69,24 @@ const ListPage = () => {
     }
   };
 
-  const openModalDeleteProduct = async (id: string) => {
+  const openModalDeleteProduct = async (product: Product_I) => {
     setShowModal(true);
-    setSelectedProductId(id);
+    setSelectedProduct(product);
   };
 
   const goToDeleteProduct = async () => {
+    if (!selectedProduct?.id) {
+      setShowModal(false);
+      alert("No se ha seleccionado un producto");
+      return;
+    };
     try {
-      const response = await deleteProductById("selectedProductId");
+      const response = await deleteProductById(selectedProduct.id);
       if (response.status === 200) {
 
         // ELIMINAR PRODUCTO DE LA LISTA
         const removeProduct = constProducts.filter(
-          (product) => product.id !== selectedProductId
+          (product) => product.id !== selectedProduct!.id
         );
 
         setConstProducts(removeProduct);
@@ -92,7 +97,7 @@ const ListPage = () => {
       setShowModal(false);
       alert("Error al eliminar el producto");
     }
-  };
+  }
 
   const onHandeleModal = () => {
     setShowModal(!showModal);
@@ -106,7 +111,7 @@ const ListPage = () => {
     <section>
       <div className="flex justify-between py-5">
         <input type="text" placeholder="Search..." onChange={searchProduct} />
-        <button onClick={goToAddProduct}>Agregar</button>
+        <button className="btn btn--primary" onClick={goToAddProduct}><span className="text-lg">+</span> Agregar</button>
       </div>
       {loading ? (
         <p>Cargando...</p>
@@ -149,16 +154,16 @@ const ListPage = () => {
                     {formatDate(product.date_revision)}
                   </td>
                   <td className="text-xs px-4 py-2 border border-gray-400">
-                    <div className="flex gap-x-2">
+                    <div className="flex justify-center gap-x-2 w-[100%]">
                       <button
-                        className="text-xs"
+                        className="btn btn--secondary btn--small"
                         onClick={() => gotoEditProduct(product.id)}
                       >
                         Editar
                       </button>
                       <button
-                        className="text-xs"
-                        onClick={() => openModalDeleteProduct(product.id)}
+                        className="btn btn--delete btn--small"
+                        onClick={() => openModalDeleteProduct(product)}
                       >
                         Eliminar
                       </button>
@@ -182,13 +187,21 @@ const ListPage = () => {
       <ModalGeneric
         showModal={showModal}
         onCloseModal={onHandeleModal}
-        message="Mensaje del modal"
+        message={`¿Estás seguro de eliminar el producto? "${selectedProduct?.name}"`}
       >
         <div className="flex justify-between items-center gapx-4">
-          <button onClick={onHandeleModal} type="button">
+          <button
+            className="btn btn--secondary"
+            onClick={onHandeleModal}
+            type="button"
+          >
             Cancelar
           </button>
-          <button onClick={goToDeleteProduct} type="button">
+          <button
+            className="btn btn--primary"
+            onClick={goToDeleteProduct}
+            type="button"
+          >
             Confirmar
           </button>
         </div>

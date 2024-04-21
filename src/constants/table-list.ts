@@ -4,5 +4,5 @@ export const COLUMNS_LIST = [
   "Descripción",
   "Fecha de liberación",
   "Fecha de revición",
-  "",
+  "Acciones",
 ];

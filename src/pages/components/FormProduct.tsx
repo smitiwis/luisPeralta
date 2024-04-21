@@ -13,7 +13,7 @@ const registerSchema = z
     id: z
       .string()
       .min(1, { message: "Este campo es requerido." })
-      .regex(/-lp$/, { message: "Id no válido." }),
+      .regex(/-lp$/, { message: "Id no válido. [xxxx-lp]" }),
     name: z.string().min(1, { message: "Este campo es requerido." }),
     description: z.string().min(1, { message: "Este campo es requerido." }),
     logo: z.string().min(1, { message: "Este campo es requerido." }),
@@ -122,11 +122,13 @@ const FormProduct: FC<Props> = ({ product }) => {
       </label>
 
       <div className="flex gap-5">
-        <button type="button" onClick={resetForm}>
+        <button className="btn btn--secondary"  type="button" onClick={resetForm}>
           Reiniciar
         </button>
 
-        <button type="submit">Enviar</button>
+        <button className="btn btn--primary" type="submit">
+          {product ? "Actualizar" : "Crear"}
+        </button>
       </div>
     </form>
   );
