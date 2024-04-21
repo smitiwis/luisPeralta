@@ -1,0 +1,21 @@
+
+.ReactModal__Overlay{
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: 1000;
+}
+
+.modal-generic{
+  border-radius: 8px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  overflow: auto;
+  outline: none;
+  padding: 1.5rem 1rem 1.2rem;
+  width: 350px,
+}

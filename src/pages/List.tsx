@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { COLUMNS_LIST } from "../constants/table-list";
 import { clearWord, formatDate } from "../helpers/date";
 import { debounce } from "lodash";
-import { getProducts } from "../services/products";
+import { deleteProductById, getProducts } from "../services/products";
 import { Product_I } from "../interfaces/products";
+import ModalGeneric from "../components/modal/ModalGeneric";
 
 const ListPage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,8 @@ const ListPage = () => {
   const [products, setProducts] = useState<Product_I[]>([]);
   const [constProducts, setConstProducts] = useState<Product_I[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string>("");
 
   const [showNumberProducts, setShowNumberProducts] = useState("10");
   // ========================================
@@ -64,6 +67,35 @@ const ListPage = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const openModalDeleteProduct = async (id: string) => {
+    setShowModal(true);
+    setSelectedProductId(id);
+  };
+
+  const goToDeleteProduct = async () => {
+    try {
+      const response = await deleteProductById("selectedProductId");
+      if (response.status === 200) {
+
+        // ELIMINAR PRODUCTO DE LA LISTA
+        const removeProduct = constProducts.filter(
+          (product) => product.id !== selectedProductId
+        );
+
+        setConstProducts(removeProduct);
+        productsPerPage(removeProduct, showNumberProducts);
+        setShowModal(false);
+      }
+    } catch (error) {
+      setShowModal(false);
+      alert("Error al eliminar el producto");
+    }
+  };
+
+  const onHandeleModal = () => {
+    setShowModal(!showModal);
   };
 
   useEffect(() => {
@@ -124,7 +156,12 @@ const ListPage = () => {
                       >
                         Editar
                       </button>
-                      <button className="text-xs">Eliminar</button>
+                      <button
+                        className="text-xs"
+                        onClick={() => openModalDeleteProduct(product.id)}
+                      >
+                        Eliminar
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -141,6 +178,21 @@ const ListPage = () => {
           </div>
         </>
       )}
+
+      <ModalGeneric
+        showModal={showModal}
+        onCloseModal={onHandeleModal}
+        message="Mensaje del modal"
+      >
+        <div className="flex justify-between items-center gapx-4">
+          <button onClick={onHandeleModal} type="button">
+            Cancelar
+          </button>
+          <button onClick={goToDeleteProduct} type="button">
+            Confirmar
+          </button>
+        </div>
+      </ModalGeneric>
     </section>
   );
 };
