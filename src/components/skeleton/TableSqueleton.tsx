@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { FC } from "react";
 
-const Squeleton = () => {
+type Props = {
+  heigth?: number;
+};
+
+const Squeleton: FC<Props> = ({ heigth = 29 }) => {
   return (
-    <div className='squeleton'>
+    <div className="squeleton" style={{ height: `${heigth}px` }}>
       <div className="box"></div>
     </div>
-  )
-}
+  );
+};
 
-export default Squeleton
+export default Squeleton;

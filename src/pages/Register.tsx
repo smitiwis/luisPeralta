@@ -14,7 +14,7 @@ const RegisterPage = () => {
         <span></span>
       </div>
       <div className="wrapper wrapper--form">
-        <FormProduct />
+        <FormProduct loading={false}/>
       </div>
     </section>
   );

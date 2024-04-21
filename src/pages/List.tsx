@@ -8,6 +8,7 @@ import { deleteProductById, getProducts } from "../services/products";
 import { Product_I } from "../interfaces/products";
 import ModalGeneric from "../components/modal/ModalGeneric";
 import Squeleton from "../components/skeleton/TableSqueleton";
+import SqueletonList from "./components/SqueletonList";
 
 const ListPage = () => {
   const navigate = useNavigate();
@@ -130,63 +131,50 @@ const ListPage = () => {
           </tr>
         </thead>
         <tbody>
-          {loading
-            ? NUM_ROWS_SQUELETON.map((i) => {
-                return (
-                  <tr key={i}>
-                    {COLUMNS_LIST.map((y) => {
-                      return (
-                        <td
-                          key={y}
-                          className="px-4 py-2 border border-x-[transparent] border-y-gray-400"
-                        >
-                          <Squeleton />
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })
-            : products.map((product) => (
-                <tr key={product.id}>
-                  <td className="px-4 py-2 border border-x-[transparent]  border-y-gray-400">
-                    <img
-                      width={50}
-                      height={50}
-                      src={product.logo}
-                      alt={product.logo}
-                    />
-                  </td>
-                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
-                    {product.name}
-                  </td>
-                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
-                    {product.description}
-                  </td>
-                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
-                    {formatDate(product.date_release)}
-                  </td>
-                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
-                    {formatDate(product.date_revision)}
-                  </td>
-                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
-                    <div className="flex justify-center gap-x-2 w-[100%]">
-                      <button
-                        className="btn btn--secondary btn--small"
-                        onClick={() => gotoEditProduct(product.id)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className="btn btn--delete btn--small"
-                        onClick={() => openModalDeleteProduct(product)}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+          {loading ? (
+            <SqueletonList />
+          ) : (
+            products.map((product) => (
+              <tr key={product.id}>
+                <td className="px-4 py-2 border border-x-[transparent]  border-y-gray-400">
+                  <img
+                    width={50}
+                    height={50}
+                    src={product.logo}
+                    alt={product.logo}
+                  />
+                </td>
+                <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
+                  {product.name}
+                </td>
+                <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
+                  {product.description}
+                </td>
+                <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
+                  {formatDate(product.date_release)}
+                </td>
+                <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
+                  {formatDate(product.date_revision)}
+                </td>
+                <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
+                  <div className="flex justify-center gap-x-2 w-[100%]">
+                    <button
+                      className="btn btn--secondary btn--small"
+                      onClick={() => gotoEditProduct(product.id)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn--delete btn--small"
+                      onClick={() => openModalDeleteProduct(product)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 

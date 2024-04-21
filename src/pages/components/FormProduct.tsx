@@ -1,41 +1,22 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { z } from "zod";
+
+import InputBk from "../../components/fields/InputBk";
 import { Product_I } from "../../interfaces/products";
 import { createProduct, updateProduct } from "../../services/products";
+import { RegisterSchemaType, registerSchema } from "../../schemas/formSchemas";
 
-// ========================================
-const registerSchema = z
-  .object({
-    id: z
-      .string()
-      .min(1, { message: "Este campo es requerido." })
-      .regex(/-lp$/, { message: "Id no válido. | ejemplo [xxxx-lp]" }),
-    name: z.string().min(1, { message: "Este campo es requerido." }),
-    description: z.string().min(1, { message: "Este campo es requerido." }),
-    logo: z.string().min(1, { message: "Este campo es requerido." }),
-    date_release: z.string().min(1, { message: "Este campo es requerido." }),
-    date_revision: z.string().min(1, { message: "Este campo es requerido." }),
-  })
-  .strict();
-
-type RegisterSchemaType = z.infer<typeof registerSchema>;
-// ========================================
-
-type Props = {
-  product?: Product_I;
-};
-const FormProduct: FC<Props> = ({ product }) => {
+const FormProduct: FC<Props> = ({ product, loading }) => {
+  const [isToUpdate, setIsToUpdate] = useState(!!product);
+  const [loadingForm, setLoadingForm] = useState(loading);
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     clearErrors,
     setValue,
   } = useForm<RegisterSchemaType>({
@@ -43,9 +24,8 @@ const FormProduct: FC<Props> = ({ product }) => {
   });
 
   const onSubmit = async (data: Product_I) => {
-    console.log(data);
     try {
-      if (!product) {
+      if (!isToUpdate) {
         const response = await createProduct(data);
         if (response.status === 200) {
           navigate("/");
@@ -63,101 +43,110 @@ const FormProduct: FC<Props> = ({ product }) => {
   };
 
   const resetForm = () => {
-    reset();
+    if (!isToUpdate) setValue("id", "");
+    setValue("name", "");
+    setValue("description", "");
+    setValue("logo", "");
+    setValue("date_release", "");
+    setValue("date_revision", "");
+
     clearErrors();
-    focusFirstInput();
+    focusInput();
   };
 
-  const focusFirstInput = () => {
-    const firstInput = document.getElementById("firstInput");
-    if (firstInput) firstInput.focus();
+  const focusInput = () => {
+    const inputId = document.getElementById("inputId");
+    const inputName = document.getElementById("inputName");
+
+    if (isToUpdate && inputName) {
+      return inputName.focus();
+    }
+
+    if (inputId) inputId.focus();
   };
 
   useEffect(() => {
+    setIsToUpdate(!!product);
     if (product) {
       setValue("id", product.id);
       setValue("name", product.name);
       setValue("description", product.description);
       setValue("logo", product.logo);
-      setValue("date_release", product.date_release);
-      setValue("date_revision", product.date_revision);
+      setValue("date_release", product.date_release.split("T")[0]);
+      setValue("date_revision", product.date_revision.split("T")[0]);
     }
   }, [product]);
+
+  useEffect(() => {
+    setLoadingForm(!loading);
+  }, [loading]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="contenedor-fields">
-        <label className="label-field mb-3">
-          <span>ID*</span>
-          <input
-            className={`input-field ${
-              errors.id?.message ? "input-field--error" : ""
-            }`}
+        <div className="wrapper-field">
+          <InputBk
+            label={"ID*"}
+            id="inputId"
             type="text"
-            {...register("id")}
-            id="firstInput"
+            register={register("id")}
+            loading={loadingForm}
+            disabled={!loadingForm}
+            readOnly={!loadingForm}
+            error={errors.id?.message}
           />
-          <p className="text text--error">{errors.id?.message}</p>
-        </label>
+        </div>
 
-        <label className="label-field mb-3">
-          <span>Nombre*</span>
-          <input
-            className={`input-field ${
-              errors.name?.message ? "input-field--error" : ""
-            }`}
+        <div className="wrapper-field">
+          <InputBk
+            label={"Nombre*"}
+            id="inputName"
             type="text"
-            {...register("name")}
+            register={register("name")}
+            loading={loadingForm}
+            error={errors.name?.message}
           />
-          <p className="text text--error">{errors.name?.message}</p>
-        </label>
+        </div>
 
-        <label className="label-field mb-3">
-          <span>Descripción*</span>
-          <input
-            className={`input-field ${
-              errors.description?.message ? "input-field--error" : ""
-            }`}
+        <div className="wrapper-field">
+          <InputBk
+            label={"Descripción*"}
             type="text"
-            {...register("description")}
+            register={register("description")}
+            loading={loadingForm}
+            error={errors.description?.message}
           />
-          <p className="text text--error">{errors.description?.message}</p>
-        </label>
+        </div>
 
-        <label className="label-field mb-3">
-          <span>Logo*</span>
-          <input
-            className={`input-field ${
-              errors.logo?.message ? "input-field--error" : ""
-            }`}
+        <div className="wrapper-field">
+          <InputBk
+            label={"Logo*"}
             type="text"
-            {...register("logo")}
+            register={register("logo")}
+            loading={loadingForm}
+            error={errors.logo?.message}
           />
-          <p className="text text--error">{errors.logo?.message}</p>
-        </label>
-        <label className="label-field mb-3">
-          <span>Fecha de liberación*</span>
-          <input
-            className={`input-field ${
-              errors.date_release?.message ? "input-field--error" : ""
-            }`}
+        </div>
+
+        <div className="wrapper-field">
+          <InputBk
+            label={"Fecha de liberación*"}
             type="date"
-            {...register("date_release")}
+            register={register("date_release")}
+            loading={loadingForm}
+            error={errors.date_release?.message}
           />
-          <p className="text text--error">{errors.date_release?.message}</p>
-        </label>
+        </div>
 
-        <label className="label-field mb-3">
-          <span>Fecha de revición*</span>
-          <input
-            className={`input-field ${
-              errors.date_revision?.message ? "input-field--error" : ""
-            }`}
+        <div className="wrapper-field">
+          <InputBk
+            label={"Fecha de revición*"}
             type="date"
-            {...register("date_revision")}
+            register={register("date_revision")}
+            loading={loadingForm}
+            error={errors.date_revision?.message}
           />
-          <p className="text text--error">{errors.date_revision?.message}</p>
-        </label>
+        </div>
       </div>
 
       <div className="flex gap-5 justify-center">
@@ -170,7 +159,7 @@ const FormProduct: FC<Props> = ({ product }) => {
         </button>
 
         <button className="btn btn--primary" type="submit">
-          {product ? "Actualizar" : "Crear"}
+          {isToUpdate ? "Actualizar" : "Crear"}
         </button>
       </div>
     </form>
@@ -178,3 +167,8 @@ const FormProduct: FC<Props> = ({ product }) => {
 };
 
 export default FormProduct;
+
+type Props = {
+  product?: Product_I;
+  loading: boolean;
+};

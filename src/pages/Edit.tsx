@@ -10,7 +10,7 @@ const EditPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [productToEdit, setProductToEdit] = useState<Product_I>();
-  
+
   const getProductsService = async () => {
     try {
       const response = await getProducts();
@@ -18,8 +18,9 @@ const EditPage = () => {
         const products = response.data;
         const findProductToEdit = products.find((product) => product.id === id);
         if (findProductToEdit) {
-          setProductToEdit(findProductToEdit)
-        } else{
+          setProductToEdit(findProductToEdit);
+          setLoading(false);
+        } else {
           navigate("/");
         }
       }
@@ -34,11 +35,22 @@ const EditPage = () => {
 
   return (
     <section className="mx-auto">
-      <div className="flex justify-between items-center">
-        <span onClick={() => navigate("/")}>BACK</span>
+      <div className="flex justify-between items-center separator wrapper wrapper--title">
+        <span className="cursor-pointer" onClick={() => navigate("/")}>
+          <img
+            width={30}
+            height={30}
+            src="http://cdn.onlinewebfonts.com/svg/img_72513.png"
+            alt=""
+          />
+        </span>
         <h2 className="my-3 font-bold">EDITAR PRODUCTO</h2>
+        <span></span>
       </div>
-      <FormProduct product={productToEdit}/>
+
+      <div className="wrapper wrapper--form">
+        <FormProduct product={productToEdit} loading={loading} />
+      </div>
     </section>
   );
 };

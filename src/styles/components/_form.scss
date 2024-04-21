@@ -15,12 +15,17 @@
 }
 
 .contenedor-fields {
-  display: flex; 
-  gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 2rem;
+
+  .wrapper-field{
+    width: calc(50% - 1rem);
+  }
 }
 
 .columna {
-  flex: 0.5; 
+  flex: 0.5;
 }
 
 // FORMULARIO
@@ -32,10 +37,10 @@
   font-weight: $fw-bold;
   padding-bottom: 1rem;
   position: relative;
-  border-color: #007bff; 
+  border-color: #007bff;
   outline: none;
 
-  .text--error{
+  .text--error {
     position: absolute;
     bottom: 0;
   }
@@ -50,14 +55,15 @@
   font-weight: $fw-ligth;
   color: $c-text;
 
-  &:focus-visible{
-    outline: none ;
+  &:focus-visible {
+    outline: none;
   }
 
-  &--error{
+  &--error {
     border: solid 2px $c-text-error;
   }
 }
+
 .text {
   &--error {
     font-size: 0.75rem;
