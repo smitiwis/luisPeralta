@@ -8,6 +8,7 @@ import ListPage from "../pages/List";
 import RegisterPage from "../pages/Register";
 import Header from "../components/Header";
 import LayoutMain from "../components/layouts/LayoutMain";
+import EditPage from "../pages/Edit";
 
 const AppRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const AppRoutes = () => {
           <Routes>
             <Route path="/" element={<ListPage />} />
             <Route path="/registro" element={<RegisterPage />} />
+            <Route path="/editar/:id" element={<EditPage />} />
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

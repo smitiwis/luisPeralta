@@ -1,36 +1,21 @@
 import React, { useEffect, useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import { COLUMNS_LIST } from "../constants/table-list";
 import { clearWord, formatDate } from "../helpers/date";
 import { debounce } from "lodash";
+import { getProducts } from "../services/products";
+import { Product_I } from "../interfaces/products";
 
 const ListPage = () => {
   const navigate = useNavigate();
 
-  const [products, setProducts] = useState<any[]>([]);
-  const [constProducts, setConstProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product_I[]>([]);
+  const [constProducts, setConstProducts] = useState<Product_I[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [showNumberProducts, setShowNumberProducts] = useState("10");
   // ========================================
-
-  const getProducts = async () => {
-    try {
-      const pathBase = process.env.REACT_APP_API_URL;
-      const config = { headers: { authorId: 428 } };
-      const response = await axios.get(`${pathBase!}/bp/products`, config);
-      if (response.status === 200) {
-        setLoading(false);
-        const products = response.data;
-        setConstProducts(products);
-        productsPerPage(products, showNumberProducts);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const searchProduct = debounce((e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -48,7 +33,7 @@ const ListPage = () => {
     productsPerPage(filterProducts, showNumberProducts);
   }, 400);
 
-  const productsPerPage = (products: any[], value: string) => {
+  const productsPerPage = (products: Product_I[], value: string) => {
     const productsPerPage = products.slice(0, Number(value));
     setProducts(productsPerPage);
   };
@@ -63,8 +48,26 @@ const ListPage = () => {
     navigate("/registro");
   };
 
+  const gotoEditProduct = (id: string) => {
+    navigate(`/editar/${id}`);
+  };
+
+  const getProductsService = async () => {
+    try {
+      const response = await getProducts();
+      if (response.status === 200) {
+        setLoading(false);
+        const products = response.data;
+        setConstProducts(products);
+        productsPerPage(products, showNumberProducts);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    getProducts();
+    getProductsService();
   }, []);
 
   return (
@@ -115,7 +118,12 @@ const ListPage = () => {
                   </td>
                   <td className="text-xs px-4 py-2 border border-gray-400">
                     <div className="flex gap-x-2">
-                      <button className="text-xs">Editar</button>
+                      <button
+                        className="text-xs"
+                        onClick={() => gotoEditProduct(product.id)}
+                      >
+                        Editar
+                      </button>
                       <button className="text-xs">Eliminar</button>
                     </div>
                   </td>
@@ -128,7 +136,7 @@ const ListPage = () => {
             <select value={showNumberProducts} onChange={handleSelect}>
               <option value="5">5</option>
               <option value="10">10</option>
-              <option value="15">15</option>
+              <option value="20">20</option>
             </select>
           </div>
         </>
