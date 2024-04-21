@@ -13,7 +13,7 @@ const registerSchema = z
     id: z
       .string()
       .min(1, { message: "Este campo es requerido." })
-      .regex(/-lp$/, { message: "Id no válido. [xxxx-lp]" }),
+      .regex(/-lp$/, { message: "Id no válido. | ejemplo [xxxx-lp]" }),
     name: z.string().min(1, { message: "Este campo es requerido." }),
     description: z.string().min(1, { message: "Este campo es requerido." }),
     logo: z.string().min(1, { message: "Este campo es requerido." }),
@@ -43,8 +43,9 @@ const FormProduct: FC<Props> = ({ product }) => {
   });
 
   const onSubmit = async (data: Product_I) => {
+    console.log(data);
     try {
-      if(!product){
+      if (!product) {
         const response = await createProduct(data);
         if (response.status === 200) {
           navigate("/");
@@ -85,44 +86,86 @@ const FormProduct: FC<Props> = ({ product }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <label className="flex gap-2 mb-3">
-        <span>ID*</span>
-        <input type="text" {...register("id")} id="firstInput" />
-        <p className="text-xs text-red-500">{errors.id?.message}</p>
-      </label>
+      <div className="contenedor-fields">
+        <label className="label-field mb-3">
+          <span>ID*</span>
+          <input
+            className={`input-field ${
+              errors.id?.message ? "input-field--error" : ""
+            }`}
+            type="text"
+            {...register("id")}
+            id="firstInput"
+          />
+          <p className="text text--error">{errors.id?.message}</p>
+        </label>
 
-      <label className="flex gap-2 mb-3">
-        <span>Nombre*</span>
-        <input type="text" {...register("name")} />
-        <p className="text-xs text-red-500">{errors.name?.message}</p>
-      </label>
+        <label className="label-field mb-3">
+          <span>Nombre*</span>
+          <input
+            className={`input-field ${
+              errors.name?.message ? "input-field--error" : ""
+            }`}
+            type="text"
+            {...register("name")}
+          />
+          <p className="text text--error">{errors.name?.message}</p>
+        </label>
 
-      <label className="flex gap-2 mb-3">
-        <span>Descripción*</span>
-        <input type="text" {...register("description")} />
-        <p className="text-xs text-red-500">{errors.description?.message}</p>
-      </label>
+        <label className="label-field mb-3">
+          <span>Descripción*</span>
+          <input
+            className={`input-field ${
+              errors.description?.message ? "input-field--error" : ""
+            }`}
+            type="text"
+            {...register("description")}
+          />
+          <p className="text text--error">{errors.description?.message}</p>
+        </label>
 
-      <label className="flex gap-2 mb-3">
-        <span>Logo*</span>
-        <input type="text" {...register("logo")} />
-        <p className="text-xs text-red-500">{errors.logo?.message}</p>
-      </label>
+        <label className="label-field mb-3">
+          <span>Logo*</span>
+          <input
+            className={`input-field ${
+              errors.logo?.message ? "input-field--error" : ""
+            }`}
+            type="text"
+            {...register("logo")}
+          />
+          <p className="text text--error">{errors.logo?.message}</p>
+        </label>
+        <label className="label-field mb-3">
+          <span>Fecha de liberación*</span>
+          <input
+            className={`input-field ${
+              errors.date_release?.message ? "input-field--error" : ""
+            }`}
+            type="date"
+            {...register("date_release")}
+          />
+          <p className="text text--error">{errors.date_release?.message}</p>
+        </label>
 
-      <label className="flex gap-2 mb-3">
-        <span>Fecha de liberación*</span>
-        <input type="text" {...register("date_release")} />
-        <p className="text-xs text-red-500">{errors.date_release?.message}</p>
-      </label>
+        <label className="label-field mb-3">
+          <span>Fecha de revición*</span>
+          <input
+            className={`input-field ${
+              errors.date_revision?.message ? "input-field--error" : ""
+            }`}
+            type="date"
+            {...register("date_revision")}
+          />
+          <p className="text text--error">{errors.date_revision?.message}</p>
+        </label>
+      </div>
 
-      <label className="flex gap-2 mb-3">
-        <span>Fecha de revición*</span>
-        <input type="text" {...register("date_revision")} />
-        <p className="text-xs text-red-500">{errors.date_revision?.message}</p>
-      </label>
-
-      <div className="flex gap-5">
-        <button className="btn btn--secondary"  type="button" onClick={resetForm}>
+      <div className="flex gap-5 justify-center">
+        <button
+          className="btn btn--secondary"
+          type="button"
+          onClick={resetForm}
+        >
           Reiniciar
         </button>
 

@@ -16,13 +16,15 @@ const AppRoutes = () => {
       <Header />
       <main>
         <LayoutMain>
-          <Routes>
-            <Route path="/" element={<ListPage />} />
-            <Route path="/registro" element={<RegisterPage />} />
-            <Route path="/editar/:id" element={<EditPage />} />
+          <div className="py-10">
+            <Routes>
+              <Route path="/" element={<ListPage />} />
+              <Route path="/registro" element={<RegisterPage />} />
+              <Route path="/editar/:id" element={<EditPage />} />
 
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </div>
         </LayoutMain>
       </main>
       {/* <footer></footer> */}

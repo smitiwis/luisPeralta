@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { Product_I } from "../interfaces/products";
 
 const pathBase = process.env.REACT_APP_API_URL;
-const config = { headers: { authorId: 428 } };
+const config = { headers: { authorId: process.env.REACT_APP_AUTHOR_ID } };
 
 export const getProducts = async (): Promise<AxiosResponse<Product_I[]>> => {
   try {

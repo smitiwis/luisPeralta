@@ -109,7 +109,7 @@ const ListPage = () => {
 
   return (
     <section>
-      <div className="flex justify-between py-5">
+      <div className="flex justify-between ">
         <input type="text" placeholder="Search..." onChange={searchProduct} />
         <button className="btn btn--primary" onClick={goToAddProduct}>
           <span className="text-lg">+</span> Agregar
