@@ -1,106 +1,39 @@
-import React, { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { COLUMNS_LIST } from "../constants/table-list";
-import { clearWord, formatDate } from "../helpers/date";
-import { debounce } from "lodash";
-import { deleteProductById, getProducts } from "../services/products";
+import { getProducts } from "../services/products";
 import { Product_I } from "../interfaces/products";
-import ModalGeneric from "../components/modal/ModalGeneric";
-import SqueletonList from "./components/SqueletonList";
+import TableList from "../components/table/TableList";
 
 const ListPage = () => {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState<Product_I[]>([]);
-  const [constProducts, setConstProducts] = useState<Product_I[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product_I>();
+  const [searchText, setSearchText] = useState("");
 
-  const [showNumberProducts, setShowNumberProducts] = useState("10");
-  // ========================================
+  // =========================================================
 
-  const searchProduct = debounce((e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!value || value === "") {
-      productsPerPage(constProducts, showNumberProducts);
-      return;
-    }
-
-    const wordSearch = clearWord(value.toLowerCase());
-    const filterProducts = constProducts.filter(({ name }) => {
-      const nameProduct = clearWord(name.toLowerCase());
-      return nameProduct.includes(wordSearch);
-    });
-
-    productsPerPage(filterProducts, showNumberProducts);
-  }, 400);
-
-  const productsPerPage = (products: Product_I[], value: string) => {
-    const productsPerPage = products.slice(0, Number(value));
-    setProducts(productsPerPage);
-  };
-
-  const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setShowNumberProducts(value);
-    productsPerPage(constProducts, value);
+  const searchProduct = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
   };
 
   const goToAddProduct = () => {
     navigate("/registro");
   };
 
-  const gotoEditProduct = (id: string) => {
-    navigate(`/editar/${id}`);
-  };
-
   const getProductsService = async () => {
     try {
       const response = await getProducts();
       if (response.status === 200) {
-        setLoading(false);
         const products = response.data.reverse();
-        setConstProducts(products);
-        productsPerPage(products, showNumberProducts);
+        setProducts(products);
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const openModalDeleteProduct = async (product: Product_I) => {
-    setShowModal(true);
-    setSelectedProduct(product);
-  };
-
-  const goToDeleteProduct = async () => {
-    if (!selectedProduct?.id) {
-      setShowModal(false);
-      alert("No se ha seleccionado un producto");
-      return;
-    }
-    try {
-      const response = await deleteProductById(selectedProduct.id);
-      if (response.status === 200) {
-        // ELIMINAR PRODUCTO DE LA LISTA
-        const removeProduct = constProducts.filter(
-          (product) => product.id !== selectedProduct!.id
-        );
-
-        setConstProducts(removeProduct);
-        productsPerPage(removeProduct, showNumberProducts);
-        setShowModal(false);
-      }
-    } catch (error) {
-      setShowModal(false);
-      alert("Error al eliminar el producto");
-    }
-  };
-
-  const onHandeleModal = () => {
-    setShowModal(!showModal);
   };
 
   useEffect(() => {
@@ -122,102 +55,13 @@ const ListPage = () => {
       </div>
 
       <div className="wrapper-table">
-        <table className="table-main">
-          <thead className="table-main__header">
-            <tr>
-              {COLUMNS_LIST.map((column) => (
-                <th key={column}>{column.toLocaleUpperCase()}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="table-main__body">
-            {loading ? (
-              <SqueletonList />
-            ) : (
-              products.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    <img
-                      width={50}
-                      height={50}
-                      src={product.logo}
-                      alt={product.logo}
-                    />
-                  </td>
-                  <td>{product.name}</td>
-                  <td>{product.description}</td>
-                  <td>{formatDate(product.date_release)}</td>
-                  <td>{formatDate(product.date_revision)}</td>
-                  <td>
-                    <div className="flex justify-center gap-x-2 w-[100%]">
-                      <button
-                        className="btn btn--secondary btn--small"
-                        onClick={() => gotoEditProduct(product.id)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className="btn btn--delete btn--small"
-                        onClick={() => openModalDeleteProduct(product)}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-
-        <div className="flex justify-between items-center mt-4">
-          <p>{products.length} resultados</p>
-          <select
-            className="select-field"
-            value={showNumberProducts}
-            onChange={handleSelect}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-          </select>
-        </div>
+        <TableList
+          columns={COLUMNS_LIST}
+          loading={loading}
+          data={products}
+          filterByName={searchText}
+        />
       </div>
-
-      <ModalGeneric
-        showModal={showModal}
-        onCloseModal={onHandeleModal}
-        message={
-          <div className="mb-8">
-            ¿Estás seguro de eliminar el producto? <br />
-            <div className="flex flex-col items-center gap-1 mt-5 justify-center">
-              <img
-                width={100}
-                src={selectedProduct?.logo}
-                alt={selectedProduct?.name}
-              />
-              <span className="font-bold">{selectedProduct?.name}</span>
-            </div>
-          </div>
-        }
-      >
-        <div className="flex justify-between items-center gapx-4">
-          <button
-            className="btn btn--secondary"
-            onClick={onHandeleModal}
-            type="button"
-          >
-            Cancelar
-          </button>
-          <button
-            className="btn btn--primary"
-            onClick={goToDeleteProduct}
-            type="button"
-          >
-            Confirmar
-          </button>
-        </div>
-      </ModalGeneric>
     </section>
   );
 };

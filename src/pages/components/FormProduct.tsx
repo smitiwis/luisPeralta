@@ -7,11 +7,15 @@ import InputBk from "../../components/fields/InputBk";
 import { Product_I } from "../../interfaces/products";
 import { createProduct, updateProduct } from "../../services/products";
 import { RegisterSchemaType, registerSchema } from "../../schemas/formSchemas";
+import ModalGeneric from "../../components/modal/ModalGeneric";
 
 const FormProduct: FC<Props> = ({ product, loading }) => {
   const [isToUpdate, setIsToUpdate] = useState(!!product);
   const [loadingForm, setLoadingForm] = useState(loading);
   const [loadingButton, setLoadingButton] = useState(false);
+  const [showModalError, setShowModalError] = useState(false);
+  const [mensajeToModal, setMensajeToModal] = useState("");
+
   const navigate = useNavigate();
 
   const {
@@ -26,24 +30,29 @@ const FormProduct: FC<Props> = ({ product, loading }) => {
 
   const onSubmit = async (data: Product_I) => {
     setLoadingButton(true);
+    const actionSuccess = isToUpdate ? "actualizado" : "creado";
+    const actionError = isToUpdate ? "actualizar" : "crear";
+
     try {
-      if (!isToUpdate) {
-        const response = await createProduct(data);
-        if (response.status === 200) {
-          setLoadingButton(false);
-          navigate("/");
+      if (isToUpdate) {
+        // ACTUALIZAR PRODUCTO
+        const response = await updateProduct(data);
+        if (response.status !== 200) {
+          setMensajeToModal(`¡Error al ${actionError} el producto!`);
         }
-        return;
+      } else {
+        // CREAR PRODUCTO
+        const response = await createProduct(data);
+        if (response.status !== 200) {
+          setMensajeToModal(`¡Error al ${actionError} el producto!`);
+        }
       }
 
-      const response = await updateProduct(data);
-      if (response.status === 200) {
-        setLoadingButton(false);
-        navigate("/");
-      }
+      setLoadingButton(false);
+      setShowModalError(true);
+      setMensajeToModal(`¡Producto ${actionSuccess} con éxito.!`);
     } catch (error) {
-      // MOSTRAR MODAL DE ERROR
-      alert("mal registro");
+      setMensajeToModal(`¡Error al ${actionError} el producto!`);
     }
   };
 
@@ -68,6 +77,11 @@ const FormProduct: FC<Props> = ({ product, loading }) => {
     }
 
     if (inputId) inputId.focus();
+  };
+
+  const onHandeleModal = () => {
+    setShowModalError(!showModalError);
+    navigate("/");
   };
 
   useEffect(() => {
@@ -182,6 +196,23 @@ const FormProduct: FC<Props> = ({ product, loading }) => {
           )}
         </button>
       </div>
+
+      <ModalGeneric
+        showModal={showModalError}
+        onCloseModal={onHandeleModal}
+        size="small"
+        message={mensajeToModal}
+      >
+        <div className="flex justify-center items-center gapx-4">
+          <button
+            className="btn btn--primary"
+            onClick={onHandeleModal}
+            type="button"
+          >
+            Aceptar
+          </button>
+        </div>
+      </ModalGeneric>
     </form>
   );
 };

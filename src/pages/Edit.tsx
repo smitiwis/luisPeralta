@@ -35,7 +35,7 @@ const EditPage = () => {
 
   return (
     <section className="mx-auto">
-      <div className="flex justify-between items-center separator wrapper wrapper--title">
+      <div className="separator-botton wrapper wrapper--title flex justify-between items-center ">
         <span className="cursor-pointer" onClick={() => navigate("/")}>
           <img
             width={30}

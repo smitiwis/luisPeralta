@@ -8,6 +8,7 @@ type Props = {
   onCloseModal: () => void;
   onAfterClose?: () => void;
   closeOnOutside?: boolean;
+  size?: "small" | "medium" | "large";
 };
 
 const ModalGeneric: FC<Props> = ({
@@ -17,6 +18,7 @@ const ModalGeneric: FC<Props> = ({
   onCloseModal,
   closeOnOutside = true,
   onAfterClose,
+  size = "medium",
 }) => {
   useEffect(() => {
     Modal.setAppElement(`#modalRoot`);
@@ -25,13 +27,13 @@ const ModalGeneric: FC<Props> = ({
   return (
     <div id={"modalRoot"}>
       <Modal
-        className="modal-generic"
+        className={`modal-generic modal-generic--${size}`}
         isOpen={showModal}
         onRequestClose={closeOnOutside ? onCloseModal : undefined} // Cerrar con click fuera del modal
         onAfterClose={onAfterClose}
       >
         <h3 className="text-base mb-5 text-center font-[500]">{message}</h3>
-        {children}
+        <div className="separator-top pt-5">{children}</div>
       </Modal>
     </div>
   );

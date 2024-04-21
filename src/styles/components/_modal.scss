@@ -17,5 +17,9 @@
   overflow: auto;
   outline: none;
   padding: 1.5rem 1rem 1.2rem;
-  width: 350px,
+  width: 350px;
+
+  &--small{
+    width: 220px;
+  }
 }
