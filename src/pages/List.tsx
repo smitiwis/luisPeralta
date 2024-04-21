@@ -1,12 +1,13 @@
 import React, { useEffect, useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { COLUMNS_LIST } from "../constants/table-list";
+import { COLUMNS_LIST, NUM_ROWS_SQUELETON } from "../constants/table-list";
 import { clearWord, formatDate } from "../helpers/date";
 import { debounce } from "lodash";
 import { deleteProductById, getProducts } from "../services/products";
 import { Product_I } from "../interfaces/products";
 import ModalGeneric from "../components/modal/ModalGeneric";
+import Squeleton from "../components/skeleton/TableSqueleton";
 
 const ListPage = () => {
   const navigate = useNavigate();
@@ -79,11 +80,10 @@ const ListPage = () => {
       setShowModal(false);
       alert("No se ha seleccionado un producto");
       return;
-    };
+    }
     try {
       const response = await deleteProductById(selectedProduct.id);
       if (response.status === 200) {
-
         // ELIMINAR PRODUCTO DE LA LISTA
         const removeProduct = constProducts.filter(
           (product) => product.id !== selectedProduct!.id
@@ -97,7 +97,7 @@ const ListPage = () => {
       setShowModal(false);
       alert("Error al eliminar el producto");
     }
-  }
+  };
 
   const onHandeleModal = () => {
     setShowModal(!showModal);
@@ -111,29 +111,45 @@ const ListPage = () => {
     <section>
       <div className="flex justify-between py-5">
         <input type="text" placeholder="Search..." onChange={searchProduct} />
-        <button className="btn btn--primary" onClick={goToAddProduct}><span className="text-lg">+</span> Agregar</button>
+        <button className="btn btn--primary" onClick={goToAddProduct}>
+          <span className="text-lg">+</span> Agregar
+        </button>
       </div>
-      {loading ? (
-        <p>Cargando...</p>
-      ) : (
-        <>
-          <table className="table-auto border-collapse border border-gray-400 w-[100%]">
-            <thead>
-              <tr>
-                {COLUMNS_LIST.map((column) => (
-                  <th
-                    className="text-xs px-4 py-2 bg-gray-200 border border-gray-400"
-                    key={column}
-                  >
-                    {column.toLocaleUpperCase()}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
+
+      <table className="table-auto border-collapse border border-gray-400 w-[100%] bg-white">
+        <thead>
+          <tr>
+            {COLUMNS_LIST.map((column) => (
+              <th
+                className="text-xs px-4 py-2 bg-gray-200 border border-y-gray-400"
+                key={column}
+              >
+                {column.toLocaleUpperCase()}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {loading
+            ? NUM_ROWS_SQUELETON.map((i) => {
+                return (
+                  <tr key={i}>
+                    {COLUMNS_LIST.map((y) => {
+                      return (
+                        <td
+                          key={y}
+                          className="px-4 py-2 border border-x-[transparent] border-y-gray-400"
+                        >
+                          <Squeleton />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })
+            : products.map((product) => (
                 <tr key={product.id}>
-                  <td className="px-4 py-2 border border-gray-400">
+                  <td className="px-4 py-2 border border-x-[transparent]  border-y-gray-400">
                     <img
                       width={50}
                       height={50}
@@ -141,19 +157,19 @@ const ListPage = () => {
                       alt={product.logo}
                     />
                   </td>
-                  <td className="text-xs px-4 py-2 border border-gray-400">
+                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
                     {product.name}
                   </td>
-                  <td className="text-xs px-4 py-2 border border-gray-400">
+                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
                     {product.description}
                   </td>
-                  <td className="text-xs px-4 py-2 border border-gray-400">
+                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
                     {formatDate(product.date_release)}
                   </td>
-                  <td className="text-xs px-4 py-2 border border-gray-400">
+                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
                     {formatDate(product.date_revision)}
                   </td>
-                  <td className="text-xs px-4 py-2 border border-gray-400">
+                  <td className="text-xs px-4 py-2 border border-x-[transparent]  border-y-gray-400">
                     <div className="flex justify-center gap-x-2 w-[100%]">
                       <button
                         className="btn btn--secondary btn--small"
@@ -171,18 +187,17 @@ const ListPage = () => {
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-          <div className="flex justify-between mt-4">
-            <p>{products.length} resultados</p>
-            <select value={showNumberProducts} onChange={handleSelect}>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-            </select>
-          </div>
-        </>
-      )}
+        </tbody>
+      </table>
+
+      <div className="flex justify-between mt-4">
+        <p>{products.length} resultados</p>
+        <select value={showNumberProducts} onChange={handleSelect}>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
 
       <ModalGeneric
         showModal={showModal}
