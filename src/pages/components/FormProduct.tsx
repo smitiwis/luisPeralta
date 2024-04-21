@@ -11,6 +11,7 @@ import { RegisterSchemaType, registerSchema } from "../../schemas/formSchemas";
 const FormProduct: FC<Props> = ({ product, loading }) => {
   const [isToUpdate, setIsToUpdate] = useState(!!product);
   const [loadingForm, setLoadingForm] = useState(loading);
+  const [loadingButton, setLoadingButton] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -24,10 +25,12 @@ const FormProduct: FC<Props> = ({ product, loading }) => {
   });
 
   const onSubmit = async (data: Product_I) => {
+    setLoadingButton(true);
     try {
       if (!isToUpdate) {
         const response = await createProduct(data);
         if (response.status === 200) {
+          setLoadingButton(false);
           navigate("/");
         }
         return;
@@ -35,9 +38,11 @@ const FormProduct: FC<Props> = ({ product, loading }) => {
 
       const response = await updateProduct(data);
       if (response.status === 200) {
+        setLoadingButton(false);
         navigate("/");
       }
     } catch (error) {
+      // MOSTRAR MODAL DE ERROR
       alert("mal registro");
     }
   };
@@ -91,8 +96,8 @@ const FormProduct: FC<Props> = ({ product, loading }) => {
             type="text"
             register={register("id")}
             loading={loadingForm}
-            disabled={!loadingForm}
-            readOnly={!loadingForm}
+            disabled={isToUpdate}
+            readOnly={isToUpdate}
             error={errors.id?.message}
           />
         </div>
@@ -149,7 +154,7 @@ const FormProduct: FC<Props> = ({ product, loading }) => {
         </div>
       </div>
 
-      <div className="flex gap-5 justify-center">
+      <div className="flex gap-5 justify-center mt-14">
         <button
           className="btn btn--secondary"
           type="button"
@@ -158,8 +163,23 @@ const FormProduct: FC<Props> = ({ product, loading }) => {
           Reiniciar
         </button>
 
-        <button className="btn btn--primary" type="submit">
-          {isToUpdate ? "Actualizar" : "Crear"}
+        <button
+          className="btn btn--primary"
+          type="submit"
+          disabled={loadingButton}
+        >
+          {loadingButton ? (
+            <img
+              className="spin-animation"
+              width={20}
+              src="https://cdn2.iconfinder.com/data/icons/interface-vol-3-1/16/sync-syncronize-transfer-spin-512.png"
+              alt=""
+            />
+          ) : isToUpdate ? (
+            "Actualizar"
+          ) : (
+            "Crear"
+          )}
         </button>
       </div>
     </form>

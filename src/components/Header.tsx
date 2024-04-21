@@ -5,12 +5,11 @@ const Header = () => {
   return (
     <header className="header-main">
       <LayoutMain>
-        <div className="flex justify-center items-center gap-1">
+        <div className="flex justify-center">
           <img
             src={`${process.env.PUBLIC_URL}/resource/logo-banco.png`}
-            alt=""
+            alt="logo banco"
           />
-          <h1 className="header-main__title">BANCO</h1>
         </div>
       </LayoutMain>
     </header>

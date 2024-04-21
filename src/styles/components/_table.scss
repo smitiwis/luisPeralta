@@ -1,0 +1,32 @@
+.wrapper-table{
+    background-color: $white;
+    padding: 1rem;
+}
+
+.table-main{
+  width: 100%;
+
+  &__header{
+    tr{
+      th{
+        padding: 1rem;
+        font-size: 0.7rem;
+        line-height: 1rem;
+        background-color:#f9fafc;
+        color: #76777a;
+        text-align: left;
+      }
+    }
+  }
+
+  &__body{
+    tr{
+      box-shadow: 0 1px 0  #dadada;
+      td{
+        padding: 0.5rem 1rem;
+        font-size: 0.7rem;
+        line-height: 1rem;
+      }
+    }
+  }
+}

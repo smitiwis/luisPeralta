@@ -1,0 +1,12 @@
+.spin-animation {
+  animation: spin 2s linear infinite; /* Nombre de la animación, duración, tipo de interpolación, repetición infinita */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg); /* Rotación inicial */
+  }
+  to {
+    transform: rotate(360deg); /* Rotación final */
+  }
+}

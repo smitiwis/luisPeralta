@@ -1,0 +1,17 @@
+.select-field {
+  padding: 0.25rem 0.5rem;
+  border: solid 2px $gray-dark;
+  border-radius: 0.3rem;
+  font-size: $font-size-sm;
+  font-weight: $fw-ligth;
+  color: $c-text;
+  min-width: 70px;
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &--error {
+    border: solid 2px $c-text-error;
+  }
+}

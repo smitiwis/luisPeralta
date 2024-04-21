@@ -1,0 +1,42 @@
+.label-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+  font-size: $font-size-sm;
+  font-weight: $fw-bold;
+  padding-bottom: 1rem;
+  position: relative;
+  border-color: #007bff;
+  outline: none;
+
+  .text--error {
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+
+.input-field {
+  padding: 0.5rem;
+  border: solid 2px $gray-dark;
+  border-radius: 0.3rem;
+  font-size: $font-size-sm;
+  font-weight: $fw-ligth;
+  color: $c-text;
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &--error {
+    border: solid 2px $c-text-error;
+  }
+}
+
+.text {
+  &--error {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: $c-text-error;
+  }
+}

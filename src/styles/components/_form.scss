@@ -6,9 +6,6 @@
   background-color: $white;
   padding: 2rem;
 
-  &--form {
-  }
-
   &--title {
     padding: 0.5rem 2rem;
   }
@@ -19,55 +16,7 @@
   flex-wrap: wrap;
   column-gap: 2rem;
 
-  .wrapper-field{
+  .wrapper-field {
     width: calc(50% - 1rem);
-  }
-}
-
-.columna {
-  flex: 0.5;
-}
-
-// FORMULARIO
-.label-field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.5rem;
-  font-size: $font-size-sm;
-  font-weight: $fw-bold;
-  padding-bottom: 1rem;
-  position: relative;
-  border-color: #007bff;
-  outline: none;
-
-  .text--error {
-    position: absolute;
-    bottom: 0;
-  }
-}
-
-// INPUTS
-.input-field {
-  padding: 0.5rem;
-  border: solid 2px $gray-dark;
-  border-radius: 0.3rem;
-  font-size: $font-size-sm;
-  font-weight: $fw-ligth;
-  color: $c-text;
-
-  &:focus-visible {
-    outline: none;
-  }
-
-  &--error {
-    border: solid 2px $c-text-error;
-  }
-}
-
-.text {
-  &--error {
-    font-size: 0.75rem;
-    line-height: 1rem;
-    color: $c-text-error;
   }
 }

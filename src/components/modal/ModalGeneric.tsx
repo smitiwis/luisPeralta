@@ -2,7 +2,7 @@ import { FC, ReactNode, useEffect } from "react";
 import Modal from "react-modal";
 
 type Props = {
-  message: string;
+  message: ReactNode | string;
   children: ReactNode;
   showModal: boolean;
   onCloseModal: () => void;
