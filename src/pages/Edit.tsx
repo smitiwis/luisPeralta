@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FormProduct from "./components/FormProduct";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProducts } from "../services/products";
 import { Product_I } from "../interfaces/products";
+import ModalGeneric from "../components/modal/ModalGeneric";
 
 const EditPage = () => {
   const { id } = useParams();
@@ -10,6 +11,10 @@ const EditPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [productToEdit, setProductToEdit] = useState<Product_I>();
+  const [showModalError, setShowModalError] = useState({
+    show: false,
+    message: "",
+  });
 
   const getProductsService = async () => {
     try {
@@ -25,8 +30,12 @@ const EditPage = () => {
         }
       }
     } catch (error) {
-      console.log(error);
+      setShowModalError({ show: true, message: "Algo salió mal" });
     }
+  };
+
+  const onHandeleModalError = () => {
+    setShowModalError({ show: !showModalError.show, message: "" });
   };
 
   useEffect(() => {
@@ -51,6 +60,23 @@ const EditPage = () => {
       <div className="wrapper wrapper--form">
         <FormProduct product={productToEdit} loading={loading} />
       </div>
+
+      <ModalGeneric
+        showModal={showModalError.show}
+        onCloseModal={onHandeleModalError}
+        size="small"
+        message={showModalError.message}
+      >
+        <div className="flex justify-between items-center gapx-4">
+          <button
+            className="btn btn--primary"
+            onClick={onHandeleModalError}
+            type="button"
+          >
+            Aceptar
+          </button>
+        </div>
+      </ModalGeneric>
     </section>
   );
 };

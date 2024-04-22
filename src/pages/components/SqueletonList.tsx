@@ -7,7 +7,7 @@ const SqueletonList = () => {
       {NUM_ROWS_SQUELETON.map((i) => (
         <tr key={i}>
           {COLUMNS_LIST.map((y) => (
-            <td key={y.name}>
+            <td key={y.key}>
               <Squeleton />
             </td>
           ))}

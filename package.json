@@ -2,6 +2,10 @@
   "name": "luis-peralta",
   "version": "0.1.0",
   "private": true,
+  "compilerOptions": {
+    "module": "CommonJS"
+  },
+  "type": "module",
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@testing-library/jest-dom": "^5.17.0",
